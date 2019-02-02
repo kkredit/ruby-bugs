@@ -1,2 +1,26 @@
-<h1>Welcome#index</h1>
-<p>Find me in app/views/welcome/index.html.erb</p>
+<div class="jumbotron">
+  <div class="container">
+    <h1>Yet Another Bug Tracker</h1>
+    <p>Bug populations are falling in the world, but they're rising in code!</p>
+    <p><a class="btn btn-primary btn-lg" href="/bugs" role="button">See bugs &raquo;</a></p>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Example row of columns -->
+  <div class="row">
+    <% @bugs.each do |bug| %>
+      <div class="col-md-4">
+        <h2><%= bug.title%></h2>
+        <p><%=bug.bug.truncate_words(30)%></p>
+        <p>
+          <%= link_to 'See details >', post, class: "btn btn-default"%>
+        </p>
+      </div>
+    <% end %>
+  </div>
+  <hr>
+  <footer>
+    <p>&copy; 2019 Bugs, Inc.</p>
+  </footer>
+</div>
