@@ -12,9 +12,9 @@
     <% @bugs.each do |bug| %>
       <div class="col-md-4">
         <h2><%= bug.title%></h2>
-        <p><%=bug.bug.truncate_words(30)%></p>
+        <p><%=bug.description.truncate_words(30)%></p>
         <p>
-          <%= link_to 'See details >', post, class: "btn btn-default"%>
+          <%= link_to 'See details >', bug, class: "btn btn-default"%>
         </p>
       </div>
     <% end %>

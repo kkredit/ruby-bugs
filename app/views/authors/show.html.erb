@@ -1,24 +1,33 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Lname:</strong>
-  <%= @author.lname %>
-</p>
+<h1>Author Profile</h1>
 
-<p>
-  <strong>Fname:</strong>
-  <%= @author.fname %>
-</p>
-
-<p>
-  <strong>Email:</strong>
-  <%= @author.email %>
-</p>
-
-<p>
-  <strong>Thumbnail:</strong>
-  <%= @author.thumbnail %>
-</p>
-
-<%= link_to 'Edit', edit_author_path(@author) %> |
-<%= link_to 'Back', authors_path %>
+<table class="table">
+  <thead>
+    <tr>
+      <th class="col-md-2">First Name</th>
+      <th class="col-md-2">Last Name</th>
+      <th class="col-md-2">Email</th>
+      <th class="col-md-2">Thumbnail</th>
+      <th class="col-md-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-md-2"><%= @author.fname %></td>
+        <td class="col-md-2"><%= @author.lname %></td>
+        <td class="col-md-2"><%= @author.email %></td>
+        <td class="col-md-2"><%= (@author.thumbnail ? @author.thumbnail : "N/A") %></td>
+        <td class="col-md-2">
+          <%= link_to edit_author_path(@author), class: "btn btn-default btn-sm" do %>
+          <i class="glyphicon glyphicon-pencil"></i> Edit
+          <% end %>
+          <%= link_to @author, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" do %>
+          <i class="glyphicon glyphicon-trash"></i> Delete
+          <% end %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br/>
+  <%= link_to 'All authors', authors_path, :class => "btn btn-primary" %>

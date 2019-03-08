@@ -1,7 +1,7 @@
 <%= form_with(model: bug, local: true) do |form| %>
   <% if bug.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(bug.errors.count, "error") %> prohibited this bug from being saved:</h2>
+    <div id="error_explanation" class="alert alert-danger">
+      <strong><%= pluralize(bug.errors.count, "error") %> prohibited this bug from being saved:</strong>
 
       <ul>
       <% bug.errors.full_messages.each do |message| %>
@@ -11,38 +11,41 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :author_id %>
-    <%= form.select :author_id,
-       options_for_select(Author.all.collect{|a| ["#{a.lname},#{a.fname}",a.id]},
-       selected: (@bug.author ? @bug.author.id : Author.first.id)), {}%>
+  <div class="form-group">
+    <%= form.label :author_id, "Author ID" %>
+    <%= form.select :author_id, #id: :author_id, class: "form-control",
+        options_for_select(Author.all.collect{|a| ["#{a.lname},#{a.fname}",a.id]},
+                           selected: (@bug.author ? @bug.author.id : Author.first.id)), {}%>
   </div>
-  <div class="field">
-    <%= form.label :title %>
-    <%= form.text_field :title %>
-  </div>
-
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description %>
+  <div class="form-group">
+    <%= form.label :title, "Bug title" %>
+    <%= form.text_field :title, id: :bug_title, class: "form-control" %>
   </div>
 
-  <div class="field">
-    <%= form.label :issue_type %>
-    <%= form.select :issue_type, @issue_types.keys, selected: @bug.issue_type %>
+  <div class="form-group">
+    <%= form.label :description, "Description" %>
+    <%= form.text_area :description, id: :description, class: "form-control" %>
   </div>
 
-  <div class="field">
-    <%= form.label :priority %>
-    <%= form.select :priority, @priorities.keys, selected: @bug.priority %>
+  <div class="form-group">
+    <%= form.label :issue_type, "Issue type" %>
+    <%= form.select :issue_type, #id: :issue_type, class: "form-control",
+       @issue_types.keys, selected: @bug.issue_type %>
   </div>
 
-  <div class="field">
-    <%= form.label :status %>
-    <%= form.select :status, @statuses.keys, selected: @bug.status %>
+  <div class="form-group">
+    <%= form.label :priority, "Priority" %>
+    <%= form.select :priority, #id: :priority, class: "form-control",
+       @priorities.keys, selected: @bug.priority %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :status, "Status" %>
+    <%= form.select :status, @statuses.keys, selected: @bug.status, class: "form-control" %>
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit class: "btn btn-primary" %>
+    <%= link_to 'Cancel', authors_path, class: "btn btn-danger" %>
   </div>
 <% end %>

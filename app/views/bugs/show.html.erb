@@ -1,34 +1,43 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Title:</strong>
-  <%= @bug.title %>
-</p>
+<h1>Bug Details</h1>
 
-<p>
-  <strong>Description:</strong>
-  <%= @bug.description %>
-</p>
+<table class="table">
+  <thead>
+    <tr>
 
-<p>
-  <strong>Issue type:</strong>
-  <%= @bug.issue_type %>
-</p>
+      <th class="col-md-2">Title</th>
+      <th class="col-md-2">Description</th>
+      <th class="col-md-2">Issue type</th>
+      <th class="col-md-2">Priority</th>
+      <th class="col-md-2">Status</th>
+      <th class="col-md-2">Author</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
 
-<p>
-  <strong>Priority:</strong>
-  <%= @bug.priority %>
-</p>
+  <tbody>
+    <tr>
+      <td class="col-md-2"><%= @bug.title %></td>
+      <td class="col-md-2"><%= @bug.description %></td>
+      <td class="col-md-2"><%= @bug.issue_type %></td>
+      <td class="col-md-2"><%= @bug.priority %></td>
+      <td class="col-md-2"><%= @bug.status %></td>
+      <td>
+        <%= (@bug.author.try(:lname)) || "NA" %>
+      </td>
+      <td class="col-md-2">
+        <%= link_to edit_bug_path(@bug), class: "btn btn-default btn-sm" do %>
+          <i class="glyphicon glyphicon-pencil"></i> Edit
+        <% end %>
+        <%= link_to @bug, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" do %>
+          <i class="glyphicon glyphicon-trash"></i> Destroy
+        <% end %>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-<p>
-  <strong>Status:</strong>
-  <%= @bug.status %>
-</p>
+<br>
 
-<p>
-  <strong>Author:</strong>
-  <%= (@bug.author.try(:lname)) || "NA"%>
-</p>
-
-<%= link_to 'Edit', edit_bug_path(@bug) %>
-<%= link_to 'Back', bugs_path %>
+<%= link_to 'All bugs', bugs_path, :class => "btn btn-primary" %>
