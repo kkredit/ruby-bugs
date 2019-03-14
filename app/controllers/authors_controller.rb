@@ -5,6 +5,11 @@ class AuthorsController < ApplicationController
   # GET /authors.json
   def index
     @authors = Author.all
+    respond_to do |format|
+      format.html {render :index}
+      format.json {render :index, status: :ok}
+      format.xml {render xml: @authors.as_json}
+    end
   end
 
   # GET /authors/1
