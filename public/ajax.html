@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<h2>This page uses AJAX to populate.</h2>
+<h2>This page uses AJAX to populate the below lists.</h2>
 
 <h3>Authors</h3>
 <ul id="authors">
@@ -23,57 +23,18 @@
 <script type="text/javascript">
 
   var getAuthors = function() {
-    //ajaxSender('/authors.xml', authorsHandler);
-
-    var ajax = new XMLHttpRequest();
-    ajax.open("GET", '/authors.xml');
-
-    ajax.onreadystatechange = function () {
-      if (ajax.readyState === 4 && ajax.status === 200) {
-        console.log("AJAX request complete");
-        authorsHandler(ajax.responseXML);
-      } else if (ajax.readyState === 4 && ajax.status !== 200) {
-        console.log("There was a problem.  Status returned was " + ajax.status);
-      }
-    };
-
-    ajax.onerror = function() {
-      console.log("There was an error!");
-    };
-
-    ajax.send();
+    ajaxSender('/authors.xml', authorsHandler);
   }
 
   var getBugs = function() {
     ajaxSender('/bugs.xml', bugsHandler);
   }
-/*
+
   var ajaxSender = function(url, handler) {
     var ajax = new XMLHttpRequest();
-    //ajax.open("GET", url);
-    ajax.open("GET", 'http://127.0.0.1:3000/authors.xml');
+    ajax.open("GET", url);
 
     ajax.onreadystatechange = function () {
-      if (ajax.readyState === 4 && ajax.status === 200) {
-        console.log("AJAX request complete");
-        //handler(ajax.responseXML);
-        authorsHandler(ajax.responseXML);
-      } else if (ajax.readyState === 4 && ajax.status !== 200) {
-        console.log("There was a problem.  Status returned was " + ajax.status);
-      }
-    };
-    //ajax.onreadystatechange = makeAjaxHandlerClosure(ajax, handler);
-
-    ajax.onerror = function() {
-      console.log("There was an error!");
-    };
-
-    ajax.send();
-  }
-*/
-/*
-  var makeAjaxHandlerClosure = function(ajax, handler) {
-    var ajaxStateHandler = function(){
       if (ajax.readyState === 4 && ajax.status === 200) {
         console.log("AJAX request complete");
         handler(ajax.responseXML);
@@ -81,9 +42,14 @@
         console.log("There was a problem.  Status returned was " + ajax.status);
       }
     };
-    return ajaxStateHandler;
+
+    ajax.onerror = function() {
+      console.log("There was an error!");
+    };
+
+    ajax.send();
   }
-*/
+
   var authorsHandler = function(responseXML) {
     authors = xmlToAuthors(responseXML);
     insertAuthors(authors);
@@ -101,17 +67,49 @@
         email: authorXML.getElementsByTagName("email")[0].textContent
       };
       authors.push(author);
-
     }
     return authors;
   }
 
   var insertAuthors = function(authors) {
     var list = document.getElementById("authors");
-    //list.getElementsByClassName("noneMarker")[0].hidden = true;
     authors.forEach(function(author){
       var newLI = document.createElement("li");
       var newText = document.createTextNode(author.lastName + ", " + author.firstName + ": " + author.email);
+      newLI.appendChild(newText);
+      list.appendChild(newLI);
+    });
+  }
+
+  var bugsHandler = function(responseXML) {
+    bugs = xmlToBugs(responseXML);
+    insertBugs(bugs);
+  }
+
+  var xmlToBugs = function(bugResponseXML) {
+    var bugs = [];
+    var bugListXML = bugResponseXML.getElementsByTagName("object");
+
+    for (var i = 0; i < bugListXML.length; i++) {
+      var bugXML = bugListXML[i];
+      var bug = {
+        type: bugXML.getElementsByTagName("issue-type")[0].textContent,
+        title: bugXML.getElementsByTagName("title")[0].textContent,
+        priority: bugXML.getElementsByTagName("priority")[0].textContent,
+        status: bugXML.getElementsByTagName("status")[0].textContent,
+        author: bugXML.getElementsByTagName("author-id")[0].textContent
+      };
+      bugs.push(bug);
+    }
+    return bugs;
+  }
+
+  var insertBugs = function(bugs) {
+    var list = document.getElementById("bugs");
+    bugs.forEach(function(bug){
+      var newLI = document.createElement("li");
+      var newText = document.createTextNode(bug.type + ": " + bug.title + ": " +
+                                            bug.priority + ", " + bug.status + ", " + bug.author);
       newLI.appendChild(newText);
       list.appendChild(newLI);
     });
