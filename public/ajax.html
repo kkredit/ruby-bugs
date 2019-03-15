@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .error {font-weight: bold; color: red}
+  </style>
+</head>
+<body>
+
+<h2>This page uses AJAX to populate.</h2>
+
+<h3>Authors</h3>
+<ul id="authors">
+</ul>
+<button id="authorButton">Get Authors</button>
+
+<h3>Bugs</h3>
+<ul id="bugs">
+</ul>
+<button id="bugButton">Get Bugs</button>
+
+<script type="text/javascript">
+
+  var getAuthors = function() {
+    //ajaxSender('/authors.xml', authorsHandler);
+
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", '/authors.xml');
+
+    ajax.onreadystatechange = function () {
+      if (ajax.readyState === 4 && ajax.status === 200) {
+        console.log("AJAX request complete");
+        authorsHandler(ajax.responseXML);
+      } else if (ajax.readyState === 4 && ajax.status !== 200) {
+        console.log("There was a problem.  Status returned was " + ajax.status);
+      }
+    };
+
+    ajax.onerror = function() {
+      console.log("There was an error!");
+    };
+
+    ajax.send();
+  }
+
+  var getBugs = function() {
+    ajaxSender('/bugs.xml', bugsHandler);
+  }
+/*
+  var ajaxSender = function(url, handler) {
+    var ajax = new XMLHttpRequest();
+    //ajax.open("GET", url);
+    ajax.open("GET", 'http://127.0.0.1:3000/authors.xml');
+
+    ajax.onreadystatechange = function () {
+      if (ajax.readyState === 4 && ajax.status === 200) {
+        console.log("AJAX request complete");
+        //handler(ajax.responseXML);
+        authorsHandler(ajax.responseXML);
+      } else if (ajax.readyState === 4 && ajax.status !== 200) {
+        console.log("There was a problem.  Status returned was " + ajax.status);
+      }
+    };
+    //ajax.onreadystatechange = makeAjaxHandlerClosure(ajax, handler);
+
+    ajax.onerror = function() {
+      console.log("There was an error!");
+    };
+
+    ajax.send();
+  }
+*/
+/*
+  var makeAjaxHandlerClosure = function(ajax, handler) {
+    var ajaxStateHandler = function(){
+      if (ajax.readyState === 4 && ajax.status === 200) {
+        console.log("AJAX request complete");
+        handler(ajax.responseXML);
+      } else if (ajax.readyState === 4 && ajax.status !== 200) {
+        console.log("There was a problem.  Status returned was " + ajax.status);
+      }
+    };
+    return ajaxStateHandler;
+  }
+*/
+  var authorsHandler = function(responseXML) {
+    authors = xmlToAuthors(responseXML);
+    insertAuthors(authors);
+  }
+
+  var xmlToAuthors = function(authorResponseXML) {
+    var authors = [];
+    var authorListXML = authorResponseXML.getElementsByTagName("object");
+
+    for (var i = 0; i < authorListXML.length; i++) {
+      var authorXML = authorListXML[i];
+      var author = {
+        firstName: authorXML.getElementsByTagName("fname")[0].textContent,
+        lastName: authorXML.getElementsByTagName("lname")[0].textContent,
+        email: authorXML.getElementsByTagName("email")[0].textContent
+      };
+      authors.push(author);
+
+    }
+    return authors;
+  }
+
+  var insertAuthors = function(authors) {
+    var list = document.getElementById("authors");
+    //list.getElementsByClassName("noneMarker")[0].hidden = true;
+    authors.forEach(function(author){
+      var newLI = document.createElement("li");
+      var newText = document.createTextNode(author.lastName + ", " + author.firstName + ": " + author.email);
+      newLI.appendChild(newText);
+      list.appendChild(newLI);
+    });
+  }
+
+  document.addEventListener("readystatechange", function () {
+    console.log("Ready:  " + document.readyState);
+    if (document.readyState === "interactive") {
+      document.getElementById("authorButton").addEventListener("click", getAuthors);
+      document.getElementById("bugButton").addEventListener("click", getBugs);
+      console.log("Button handlers ready");
+    }
+  });
+</script>
+
+</body>
+</html>
